@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/main.css">
+  <title>Add a movie</title>
+</head>
+<body>
+  {{> nav }}
+  <div class="vip">
+    <br>
+    <h1>Add your movie</h1>
+    <form action="/create" method="post">
+    <br>
+    <input type="text" name="title" value="Title">
+    <br><br>
+    <input type="text" name="year" value="Year">
+    <br><br>
+    <input type="text" name="genre" value="Genre">
+    <br><br>
+    <input type="text" name="director" value="Director">
+    <br><br>
+    <input type="text" name="rate" value="Rate">
+    <br><br>
+    <input type="text" name="duration" value="Duration">
+    <br><br>
+    <input type="submit" value="Submit">
+  </div>
+</form> 
+</body>
+</html>

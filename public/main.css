@@ -1,0 +1,27 @@
+@charset "utf-8";
+
+body {
+  /* background-image: url("../../images/movies.jpg"); */
+  background-color: rgb(163, 211, 219);
+  text-align: center;
+}
+
+.start {
+  font-size: 3em;
+  color: black;
+  text-shadow: 0 0 100px rgb(214, 35, 35);
+}
+
+.vip {
+  background-color: rgb(136, 24, 61);
+  color: rgb(187, 184, 184);
+}
+
+input {
+  background-color: rgb(65, 5, 25);
+  color: white;
+}
+
+ul {
+  list-style-type: none;
+}
