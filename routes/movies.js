@@ -13,7 +13,18 @@ app.use(bodyParser.json())
 
 var Movie = require("../models/movie.js")
 
+mongoose.connect("mongodb://localhost:27017/video", {
+  useNewUrlParser: true
+})
+
 //create
+app.get("/create", function(req, res){
+  if (req.cookies.whoIsLoggedIn) {
+    res.render("create", {name:req.cookies.whoIsLoggedIn})
+  }
+  res.render("login")
+})
+
 app.post("/create", function(req, res){
   var movie = new Movie(req.body);
   movie.save(function(err){
@@ -22,24 +33,7 @@ app.post("/create", function(req, res){
   })
 })
 
-app.get("/create", function(req, res){
-  if (req.cookies.whoIsLoggedIn) {
-    res.render("create", {name:req.cookies.whoIsLoggedIn})
-  }
-  res.render("login")
-})
-
 //search
-app.post("/search", function(req, res){
-  Movie.find({title: {'$regex': req.body.title, $options: "i"}})
-  .then((result) => {
-    res.render("batman", {movies: result, name:req.cookies.whoIsLoggedIn})
-  })
-  .catch((err)=> {
-    res.send("ERROR")
-  })
-})
-
 app.get("/search", function(req, res){
   if (req.cookies.whoIsLoggedIn) {
     res.render("vipsearch", {name:req.cookies.whoIsLoggedIn})
@@ -47,20 +41,30 @@ app.get("/search", function(req, res){
   res.render("search")
 })
 
+app.post("/search", function(req, res){
+  Movie.find({title: {'$regex': req.body.title, $options: "i"}})
+  .then((result) => {
+    res.render("batman", {movies: result, name:req.cookies.whoIsLoggedIn})
+  })
+  .catch((err)=> {
+    throw(err)
+  })
+})
+
 //vipsearch
 app.post("/vipsearch", function(req, res){
   Movie.find({$or: 
     [
-      {title: {'$regex': req.body.title, $options: "i"}}, 
-      {year: {'$regex': req.body.title, $options: "i"}}, 
-      {director: {'$regex': req.body.title, $options: "i"}}
+      {title: {'$regex': req.body.viptitle, $options: "i"}}, 
+      {year: {'$regex': req.body.viptitle, $options: "i"}}, 
+      {director: {'$regex': req.body.viptitle, $options: "i"}}
     ]}
   )
   .then((result) => {
     res.render("batman", {movies: result, name:req.cookies.whoIsLoggedIn})
   })
   .catch((err)=> {
-    res.send("ERROR")
+    throw(err)
   })
 })
 
@@ -71,7 +75,7 @@ app.get("/batman", function(req, res){
     res.render("batman", {movies: result, name:req.cookies.whoIsLoggedIn})
   })
   .catch((err)=> {
-    res.send("ERROR")
+    throw(err)
   })
 })
 

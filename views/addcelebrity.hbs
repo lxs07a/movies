@@ -1,27 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.css">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-  <link rel="stylesheet" href="/main.css">
-  <title>Add a celebrity</title>
-</head>
-<body>
-  {{> nav }}
-  <div class="vip">
-    <br>
-    <h1>Add a new celebrity</h1>
-    <form action="/addcelebrity" method="post">
+<div class="vip">
+  <br>
+  <h1>Add a new celebrity</h1>
+  <form action="/addcelebrity" method="post">
     <br>
     <input type="text" name="name" placeholder="Name">
     <br><br>
     <input type="text" name="movies" value="Movies">
     <br><br>
     <input type="submit" value="Submit">
-  </div>
-</form> 
-</body>
-</html>
+</div>

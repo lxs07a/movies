@@ -13,7 +13,18 @@ app.use(bodyParser.json())
 
 var Celebrity = require("../models/celebrity.js")
 
+mongoose.connect("mongodb://localhost:27017/video", {
+  useNewUrlParser: true
+})
+
 //create
+app.get("/addcelebrity", function(req, res){
+  if (req.cookies.whoIsLoggedIn) {
+    res.render("addcelebrity", {name:req.cookies.whoIsLoggedIn})
+  }
+  res.render("login")
+})
+
 app.post("/addcelebrity", function(req, res){
   var celebrity = new Celebrity(req.body);
   celebrity.save(function(err){
@@ -22,14 +33,14 @@ app.post("/addcelebrity", function(req, res){
   })
 })
 
-app.get("/addcelebrity", function(req, res){
+//search
+app.get("/celebritysearch", function(req, res, err){
   if (req.cookies.whoIsLoggedIn) {
-    res.render("addcelebrity", {name:req.cookies.whoIsLoggedIn})
+    res.render("celebritysearch", {name:req.cookies.whoIsLoggedIn})
   }
   res.render("login")
 })
 
-//search
 app.post("/celebritysearch", function(req, res){
   Celebrity.find({$or: 
     [
@@ -41,16 +52,8 @@ app.post("/celebritysearch", function(req, res){
     res.render("celebritybatman", {celebrities: result, name:req.cookies.whoIsLoggedIn})
   })
   .catch((err)=> {
-    res.send("ERROR")
+    throw(err)
   })
-})
-
-app.get("/celebritysearch", function(req, res, err){
-  if (req.cookies.whoIsLoggedIn) {
-    res.render("celebritysearch", {name:req.cookies.whoIsLoggedIn})
-  }
-  res.render("login")
-
 })
 
 module.exports = app
