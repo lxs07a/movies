@@ -1,6 +1,8 @@
 const express = require("express")
 const app = express()
 
+var session = require('express-session')
+
 var cookieParser = require('cookie-parser')
 app.use(cookieParser())
 
@@ -23,19 +25,24 @@ app.get("/signup", function(req, res){
 })
 
 app.post("/signup", function(req, res){
-    console.log("Cookie ", req.cookies)
-//   if (req.cookies.whoIsLoggedIn) {
-//       debugger
-//     res.clearCookie("whoIsLoggedIn")
-//   }
-  debugger
-  bcrypt.hash(req.body.password, saltRounds, function(err, hash) {
-    var user = new User({username:req.body.username, password:hash})
-    user.save()
-    res.cookie('whoIsLoggedIn', req.body.username)
-    debugger
-    res.render("vipsearch", {name:req.cookies.whoIsLoggedIn})
-  })
+    res.clearCookie("whoIsLoggedIn")
+    User.find({username: req.body.username},
+        function(err, result) {
+          if(result[0]) res.render("errlogin")
+          else {
+            bcrypt.hash(req.body.password, saltRounds, function(err, hash) {
+                var user = new User({username:req.body.username, password:hash})
+                user.save(function(err){
+                    res.cookie('whoIsLoggedIn', req.body.username)
+                    res.render("vipsearch", {name:req.body.username})
+                })
+            })
+        }        
+    })
+})
+
+app.get("/vipsearch", function(req, res){
+    res.render("vipsearch")
 })
 
 //Error sign up page
@@ -44,16 +51,20 @@ app.get("/errsignup", function(req, res){
 })
 
 app.post("/errsignup", function(req, res){
-  if (req.cookies.whoIsLoggedIn) {
     res.clearCookie("whoIsLoggedIn")
-  }
-  var user = new User(req.body)
-  user.save(function(err){
-    if (err) res.send("Error")
-    res.render("vipsearch", {name:req.body.username})
-    res.cookie('whoIsLoggedIn', req.body.username)
-    console.log('Cookies: ', req.cookies.whoIsLoggedIn)
-  })
+    User.find({username: req.body.username},
+        function(err, result) {
+          if(result[0]) res.render("errlogin")
+          else {
+            bcrypt.hash(req.body.password, saltRounds, function(err, hash) {
+                var user = new User({username:req.body.username, password:hash})
+                user.save(function(err){
+                    res.cookie('whoIsLoggedIn', req.body.username)
+                    res.render("vipsearch", {name:req.body.username})
+                })
+            })
+        }        
+    })
 })
 
 //Log In page
@@ -64,15 +75,12 @@ app.get("/login", function(req, res){
 app.post("/login", function(req, res){
     User.find({username: req.body.username},
       function(err, result) {
-        console.log(result)
-        var password = req.body.password
         if(result[0]===undefined) res.render("errsignup")
-        else if(result[0].password!=password) res.render("errsignup")
-        else if(result[0].username===req.body.username) {
-            res.cookie('whoIsLoggedIn', req.body.username)
-            res.render("vipsearch", {name:req.body.username})
-          console.log('Cookies: ', req.cookies.whoIsLoggedIn)
-        }
+        bcrypt.compare(req.body.password, result[0].password, function(err, res) {
+            if(false) res.render("errsignup")
+        })
+        res.cookie('whoIsLoggedIn', req.body.username)
+        res.render("vipsearch", {name:req.body.username})
     })
 })
 

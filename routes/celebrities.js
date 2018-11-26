@@ -21,15 +21,14 @@ mongoose.connect("mongodb://localhost:27017/video", {
 app.get("/addcelebrity", function(req, res){
   if (req.cookies.whoIsLoggedIn) {
     res.render("addcelebrity", {name:req.cookies.whoIsLoggedIn})
-  }
-  res.render("login")
+  } else res.render("login")
 })
 
 app.post("/addcelebrity", function(req, res){
   var celebrity = new Celebrity(req.body);
   celebrity.save(function(err){
     if (err) res.send("Error")
-    res.render("success")
+    else res.render("success", {name:req.cookies.whoIsLoggedIn})
   })
 })
 
@@ -37,8 +36,7 @@ app.post("/addcelebrity", function(req, res){
 app.get("/celebritysearch", function(req, res, err){
   if (req.cookies.whoIsLoggedIn) {
     res.render("celebritysearch", {name:req.cookies.whoIsLoggedIn})
-  }
-  res.render("login")
+  } else res.render("login")
 })
 
 app.post("/celebritysearch", function(req, res){

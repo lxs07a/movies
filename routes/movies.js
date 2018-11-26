@@ -21,15 +21,24 @@ mongoose.connect("mongodb://localhost:27017/video", {
 app.get("/create", function(req, res){
   if (req.cookies.whoIsLoggedIn) {
     res.render("create", {name:req.cookies.whoIsLoggedIn})
-  }
-  res.render("login")
+  } else res.render("login")
 })
 
 app.post("/create", function(req, res){
-  var movie = new Movie(req.body);
-  movie.save(function(err){
-    if (err) res.send("Error")
-    res.render("created")
+  Movie.find({title: req.body.title})
+  .then ((result) => {
+    console.log(result)
+    if (result[0]!==undefined) {
+      res.render("errcreate", {name:req.cookies.whoIsLoggedIn})
+    } else {
+        var movie = new Movie(req.body);
+        movie.save(function(){
+        res.render("created", {name:req.cookies.whoIsLoggedIn})
+      })
+    }
+  })
+  .catch((err)=> {
+    throw(err)
   })
 })
 
@@ -37,8 +46,7 @@ app.post("/create", function(req, res){
 app.get("/search", function(req, res){
   if (req.cookies.whoIsLoggedIn) {
     res.render("vipsearch", {name:req.cookies.whoIsLoggedIn})
-  }
-  res.render("search")
+  } else res.render("search")
 })
 
 app.post("/search", function(req, res){
